@@ -14,7 +14,7 @@
   let sel = 0;                       // 0 = Ruta Faro, 1 = alternativa
   let enCurso = 0;                   // evita que una respuesta vieja pise a una nueva
   let destinoNombre = "";
-  let nav = null;                    // { r, p, auto, timer, cupones: Map(negocio_id → [titulos]) }
+  let nav = null;                    // { r, p, cupones: Map(negocio_id → [titulos]) }
   let sugs = [];                     // sugerencias en pantalla
   let activa = -1;                   // sugerencia resaltada con el teclado
 
@@ -187,7 +187,7 @@
       App.toast(n === 1 ? "Obtuviste 1 cupón. Lo ves en MIS CUPONES." : `Obtuviste ${n} cupones. Los ves en MIS CUPONES.`);
     }
     fase = "nav";
-    nav = { r, p: 0, auto: false, timer: null, cupones };
+    nav = { r, p: 0, cupones };
     App.mods.cupones.recargar();
     App.mapa.dibujarRutas([r], { activa: 0 });
     App.mapa.marcarCupones(r.faros_en_ruta.filter((f) => cupones.has(f.id)).map((f) => f.nodo_id));
@@ -212,8 +212,7 @@
       fila("nav-acciones",
         llego
           ? h("button", { class: "pill-dorada", type: "button", onClick: () => terminar(), text: "TERMINAR" })
-          : [h("button", { class: "pill-borde", type: "button", onClick: () => avanzar(), text: "SIMULAR AVANCE" }),
-             h("button", { class: "pill-borde", type: "button", "aria-pressed": String(nav.auto), onClick: alternarAuto, text: nav.auto ? "AUTO: SÍ" : "AUTO: NO" })]));
+          : h("button", { class: "pill-borde", type: "button", onClick: () => avanzar(), text: "SIMULAR AVANCE" })));
     tarjeta.hidden = false;
     App.ajustarInferior();
   }
@@ -230,18 +229,10 @@
       const cup = nav.cupones.get(f.id);
       App.toast(cup ? `Estás junto a ${f.nombre}: tienes un cupón.` : `Estás junto a ${f.nombre}.`, "info");
     }
-    if (nav.p >= nav.r.nodos.length - 1) pararAuto();
-    pintarNav();
-  }
-  function pararAuto() { if (nav) { clearInterval(nav.timer); nav.timer = null; nav.auto = false; } }
-  function alternarAuto() {
-    if (!nav) return;
-    if (nav.auto) pararAuto(); else { nav.auto = true; nav.timer = setInterval(avanzar, 2000); }
     pintarNav();
   }
 
   function terminar() {
-    pararAuto();
     nav = null;
     limpiarRuta(true);
   }
@@ -290,7 +281,7 @@
     /** Fija el destino (desde la ficha de un Faro o desde "Ir aquí") y calcula. */
     irA(n) {
       const z = App.mapa.zona, f = z && z.faros.find((x) => x.nodo_id === n);
-      pararAuto(); nav = null;
+      nav = null;
       App.estado.destino = n;
       destinoNombre = f ? f.nombre : nodo(n).nombre;
       $("buscador").readOnly = false;
