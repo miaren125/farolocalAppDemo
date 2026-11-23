@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FaroLocal — Portal de administración</title>
+  <link rel="stylesheet" href="/shared/tema.css">
+  <link rel="stylesheet" href="/portal/portal.css">
+</head>
+<body class="tema-claro" data-seccion="admin">
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div id="panel" hidden>
+    <header class="portal-barra">
+      <a class="marca" href="/portal/admin/"><span>Faro<b>Local</b></span> <span class="etiqueta-portal">Administración</span></a>
+      <div class="usuario"><span id="nombre-usuario"></span><button class="btn btn-secundario btn-chico" id="salir" type="button">Salir</button></div>
+    </header>
+
+    <div class="layout">
+      <nav class="lateral" aria-label="Secciones de administración">
+        <a href="#resumen" data-vista="resumen">Resumen</a>
+        <a href="#negocios" data-vista="negocios">Negocios <span class="contador" id="cnt-negocios" hidden></span></a>
+        <a href="#reportes" data-vista="reportes">Reportes <span class="contador" id="cnt-reportes" hidden></span></a>
+      </nav>
+
+      <main class="portal-cuerpo" id="contenido">
+        <div class="aviso aviso-error" id="error-general" role="alert" hidden></div>
+
+        <section id="v-resumen" hidden>
+          <h1>Resumen</h1>
+          <p class="sub">Lo que necesita tu atención hoy.</p>
+          <div class="contadores" id="resumen-contadores"></div>
+        </section>
+
+        <!-- RF14 -->
+        <section id="v-negocios" hidden>
+          <h1>Validar negocios</h1>
+          <p class="sub">Aprueba los negocios que cumplen con ser un Punto Faro. Solo los aprobados aparecen en el mapa.</p>
+          <div class="pestanas inline" role="group" aria-label="Filtrar negocios por estado" id="filtro-negocios"></div>
+          <div class="dos-col">
+            <div class="tabla-wrap"><table class="tabla">
+              <thead><tr><th>Negocio</th><th>Titular</th><th>Estado</th></tr></thead>
+              <tbody id="negocios-filas"></tbody>
+            </table></div>
+            <aside class="panel-caja" id="negocio-detalle" aria-live="polite" aria-label="Detalle del negocio"></aside>
+          </div>
+        </section>
+
+        <!-- RF15 -->
+        <section id="v-reportes" hidden>
+          <h1>Moderar reportes</h1>
+          <p class="sub">Un reporte aprobado penaliza el tramo en la Ruta Faro. Revisa el tramo en el mapa antes de decidir.</p>
+          <div class="pestanas inline" role="group" aria-label="Filtrar reportes por estado" id="filtro-reportes"></div>
+          <div class="dos-col">
+            <div class="tabla-wrap"><table class="tabla">
+              <thead><tr><th>Reporte</th><th>Estado</th></tr></thead>
+              <tbody id="reportes-filas"></tbody>
+            </table></div>
+            <aside class="panel-caja" aria-label="Mapa del tramo reportado">
+              <h2>Tramo reportado</h2>
+              <p class="ubicacion" id="reporte-tramo">Elige un reporte para ver su tramo.</p>
+              <div id="mapa-reportes"></div>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="dlg-rechazo" class="modal" aria-labelledby="rechazo-titulo">
+    <h2 id="rechazo-titulo">Rechazar negocio</h2>
+    <p class="suave" id="rechazo-negocio"></p>
+    <form id="form-rechazo" novalidate>
+      <div class="aviso aviso-error" id="rechazo-aviso" role="alert" hidden></div>
+      <div class="campo">
+        <label for="r-motivo">Motivo del rechazo</label>
+        <textarea class="entrada" id="r-motivo" name="motivo" maxlength="300" aria-describedby="r-motivo-e r-motivo-a"></textarea>
+        <span class="ayuda" id="r-motivo-a">El titular verá este mensaje. Explica qué debe corregir.</span>
+        <div class="campo-error" id="r-motivo-e" data-error-de="motivo" role="alert"></div>
+      </div>
+      <div class="acciones-fila">
+        <button class="btn btn-secundario" type="button" id="rechazo-cancelar">Cancelar</button>
+        <button class="btn btn-peligro" type="submit">Rechazar negocio</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/shared/api.js"></script>
+  <script src="/shared/mapa.js"></script>
+  <script src="/portal/ui.js"></script>
+  <script src="/portal/admin/admin.js"></script>
+  <script src="/portal/portal.js"></script>
+</body>
+</html>

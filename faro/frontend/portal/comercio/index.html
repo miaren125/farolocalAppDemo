@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FaroLocal — Portal de comercio</title>
+  <link rel="stylesheet" href="/shared/tema.css">
+  <link rel="stylesheet" href="/portal/portal.css">
+</head>
+<body class="tema-claro" data-seccion="comercio">
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div id="panel" hidden>
+    <header class="portal-barra">
+      <a class="marca" href="/portal/comercio/"><span>Faro<b>Local</b></span> <span class="etiqueta-portal">Comercio</span></a>
+      <div class="usuario"><span id="nombre-usuario"></span><button class="btn btn-secundario btn-chico" id="salir" type="button">Salir</button></div>
+    </header>
+
+    <div class="layout">
+      <nav class="lateral" aria-label="Secciones del portal">
+        <a href="#panel" data-vista="panel">Panel</a>
+        <a href="#negocio" data-vista="negocio">Mi negocio</a>
+        <a href="#cupones" data-vista="cupones">Cupones</a>
+        <a href="#validar" data-vista="validar">Validar cupón</a>
+      </nav>
+
+      <main class="portal-cuerpo" id="contenido">
+        <div class="aviso aviso-error" id="error-general" role="alert" hidden></div>
+
+        <!-- RF11 -->
+        <section id="v-panel" hidden>
+          <h1>Panel</h1>
+          <p class="sub">Así te ven las personas que caminan por la zona.</p>
+          <div id="panel-estado"></div>
+          <div class="contadores" id="panel-contadores"></div>
+        </section>
+
+        <!-- RF10 -->
+        <section id="v-negocio" hidden>
+          <h1 id="negocio-titulo">Registrar mi negocio</h1>
+          <p class="sub" id="negocio-sub">Cuando un administrador lo apruebe, aparecerá en el mapa como Punto Faro.</p>
+          <div id="negocio-estado"></div>
+          <form id="form-negocio" novalidate>
+            <div class="aviso aviso-error" id="negocio-aviso" role="alert" hidden></div>
+            <div class="dos-col">
+              <div class="panel-caja">
+                <h2>Datos del negocio</h2>
+                <div class="campo">
+                  <label for="n-nombre">Nombre del negocio</label>
+                  <input class="entrada" id="n-nombre" name="nombre" maxlength="80" autocomplete="off" aria-describedby="n-nombre-e" required>
+                  <div class="campo-error" id="n-nombre-e" data-error-de="nombre" role="alert"></div>
+                </div>
+                <div class="fila-campos">
+                  <div class="campo">
+                    <label for="n-giro">Giro</label>
+                    <input class="entrada" id="n-giro" name="giro" list="giros" maxlength="40" autocomplete="off" aria-describedby="n-giro-e" required>
+                    <datalist id="giros"><option value="Abarrotes"><option value="Farmacia"><option value="Taquería"><option value="Cafetería"><option value="Gasolinera"><option value="Lonchería"><option value="Papelería"></datalist>
+                    <div class="campo-error" id="n-giro-e" data-error-de="giro" role="alert"></div>
+                  </div>
+                  <div class="campo">
+                    <label for="n-dir">Dirección</label>
+                    <input class="entrada" id="n-dir" name="direccion" maxlength="160" autocomplete="off" aria-describedby="n-dir-e" required>
+                    <div class="campo-error" id="n-dir-e" data-error-de="direccion" role="alert"></div>
+                  </div>
+                </div>
+                <div class="fila-campos">
+                  <div class="campo">
+                    <label for="n-abre">Abre</label>
+                    <input class="entrada" id="n-abre" name="abre" type="time" aria-describedby="n-abre-e" required>
+                    <div class="campo-error" id="n-abre-e" data-error-de="abre" role="alert"></div>
+                  </div>
+                  <div class="campo">
+                    <label for="n-cierra">Cierra</label>
+                    <input class="entrada" id="n-cierra" name="cierra" type="time" aria-describedby="n-cierra-e" required>
+                    <div class="campo-error" id="n-cierra-e" data-error-de="cierra" role="alert"></div>
+                  </div>
+                </div>
+                <label class="check"><input type="checkbox" id="n-24h"> Abierto las 24 horas</label>
+                <fieldset class="servicios" aria-describedby="n-serv-e">
+                  <legend>Servicios de apoyo para peatones</legend>
+                  <label><input type="checkbox" name="servicio" value="Agua"> Agua</label>
+                  <label><input type="checkbox" name="servicio" value="Baño"> Baño</label>
+                  <label><input type="checkbox" name="servicio" value="Teléfono"> Teléfono</label>
+                  <label><input type="checkbox" name="servicio" value="Cámara de vigilancia"> Cámara de vigilancia</label>
+                  <label><input type="checkbox" name="servicio" value="Personal toda la noche"> Personal toda la noche</label>
+                </fieldset>
+                <div class="campo-error" id="n-serv-e" data-error-de="servicios" role="alert"></div>
+              </div>
+
+              <div class="panel-caja">
+                <h2>Ubicación en el mapa</h2>
+                <p class="ubicacion" id="n-ubicacion">Toca el cruce donde está tu negocio.</p>
+                <input type="hidden" name="nodo_id" id="n-nodo">
+                <div id="mapa-negocio" aria-label="Mapa para elegir la ubicación del negocio"></div>
+                <div class="campo-error" id="n-nodo-e" data-error-de="nodo_id" role="alert"></div>
+              </div>
+            </div>
+            <div class="acciones-fila"><button class="btn" id="negocio-guardar" type="submit">Enviar a revisión</button></div>
+          </form>
+        </section>
+
+        <!-- RF12 -->
+        <section id="v-cupones" hidden>
+          <div class="encabezado-vista">
+            <div><h1>Cupones</h1><p class="sub">Los peatones obtienen un código personal y tú lo validas en caja.</p></div>
+            <button class="btn" id="cupon-nuevo" type="button">Nuevo cupón</button>
+          </div>
+          <div class="aviso aviso-info" id="cupones-bloqueo" hidden></div>
+          <div class="tabla-wrap"><table class="tabla">
+            <thead><tr><th>Cupón</th><th>Vigencia</th><th>Estado</th><th>Canjes</th><th><span class="solo-lectores">Acciones</span></th></tr></thead>
+            <tbody id="cupones-filas"></tbody>
+          </table></div>
+        </section>
+
+        <!-- RF13 -->
+        <section id="v-validar" hidden>
+          <h1>Validar cupón</h1>
+          <p class="sub">Escribe el código que te muestra la persona. Al validarlo se marca como canjeado y no podrá usarse otra vez.</p>
+          <div class="panel-caja validar-caja">
+            <form id="form-validar" novalidate>
+              <div class="campo">
+                <label for="v-codigo">Código del cupón</label>
+                <input class="entrada codigo-entrada" id="v-codigo" name="codigo" placeholder="FARO-XXXXXX" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="v-codigo-e">
+                <div class="campo-error" id="v-codigo-e" data-error-de="codigo" role="alert"></div>
+              </div>
+              <button class="btn btn-bloque" type="submit">Validar y canjear</button>
+            </form>
+            <div id="validar-resultado" role="status" aria-live="polite"></div>
+          </div>
+          <h2 class="sep">Validados en esta sesión</h2>
+          <ul class="lista-sesion" id="validar-historial"></ul>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="dlg-cupon" class="modal" aria-labelledby="cupon-titulo">
+    <h2 id="cupon-titulo">Nuevo cupón</h2>
+    <form id="form-cupon" novalidate>
+      <div class="aviso aviso-error" id="cupon-aviso" role="alert" hidden></div>
+      <div class="campo">
+        <label for="c-titulo">Título</label>
+        <input class="entrada" id="c-titulo" name="titulo" maxlength="80" autocomplete="off" aria-describedby="c-titulo-e">
+        <div class="campo-error" id="c-titulo-e" data-error-de="titulo" role="alert"></div>
+      </div>
+      <div class="campo">
+        <label for="c-desc">Descripción y condiciones</label>
+        <textarea class="entrada" id="c-desc" name="descripcion" maxlength="200" aria-describedby="c-desc-e"></textarea>
+        <div class="campo-error" id="c-desc-e" data-error-de="descripcion" role="alert"></div>
+      </div>
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="c-inicio">Inicia</label>
+          <input class="entrada" id="c-inicio" name="inicio" type="date" aria-describedby="c-inicio-e">
+          <div class="campo-error" id="c-inicio-e" data-error-de="inicio" role="alert"></div>
+        </div>
+        <div class="campo">
+          <label for="c-fin">Termina</label>
+          <input class="entrada" id="c-fin" name="fin" type="date" aria-describedby="c-fin-e">
+          <div class="campo-error" id="c-fin-e" data-error-de="fin" role="alert"></div>
+        </div>
+      </div>
+      <div class="acciones-fila">
+        <button class="btn btn-secundario" type="button" id="cupon-cancelar">Cancelar</button>
+        <button class="btn" type="submit">Guardar cupón</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/shared/api.js"></script>
+  <script src="/shared/mapa.js"></script>
+  <script src="/portal/ui.js"></script>
+  <script src="/portal/comercio/comercio.js"></script>
+  <script src="/portal/portal.js"></script>
+</body>
+</html>

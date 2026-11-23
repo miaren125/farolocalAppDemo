@@ -1,0 +1,195 @@
+/* FaroLocal — tema compartido (app del peatón y portal).
+   Identidad: azul marino + crema, acento ámbar tipo luz de faro.
+   Montserrat (títulos) y Nunito Sans (texto), servidas localmente para funcionar sin internet. */
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500 800;
+  font-display: swap;
+  src: url("/vendor/fonts/montserrat.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/vendor/fonts/nunito-sans.woff2") format("woff2");
+}
+
+:root {
+  /* paleta base */
+  --marino-900: #07152b;
+  --marino-800: #0b1f3a;
+  --marino-700: #12294a;
+  --marino-600: #1b3a66;
+  --marino-500: #2c4f82;
+  --crema-100: #fbf7ee;
+  --crema-200: #f7f0e1;
+  --crema-300: #e8dfca;
+  --ambar-400: #ffc94d;
+  --ambar-500: #f5b83d;
+  --ambar-600: #d99a1a;
+
+  /* semánticos (tema oscuro por defecto) */
+  --fondo: var(--marino-800);
+  --superficie: var(--marino-700);
+  --superficie-2: var(--marino-600);
+  --borde: #2f4a74;
+  --texto: var(--crema-200);
+  --texto-suave: #b9c4d8;
+  --acento: var(--ambar-500);
+  --acento-texto: var(--marino-900);   /* texto sobre botones ámbar (AA) */
+  --enlace: var(--ambar-400);
+  --ok: #7ee2a8;
+  --ok-fondo: #12392f;
+  --aviso: #ffd37a;
+  --aviso-fondo: #43330f;
+  --peligro: #ff9d94;
+  --peligro-fondo: #4a1a1f;
+  --info: #9cc7ff;
+  --info-fondo: #14325c;
+  --foco: #ffffff;
+
+  --radio: 14px;
+  --radio-sm: 10px;
+  --sombra: 0 6px 24px rgba(0, 0, 0, .35);
+  --fuente-titulo: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --fuente-texto: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Tema claro (portal de escritorio): crema con texto marino */
+.tema-claro {
+  --fondo: var(--crema-200);
+  --superficie: #ffffff;
+  --superficie-2: var(--crema-100);
+  --borde: #cfc4aa;
+  --texto: var(--marino-800);
+  --texto-suave: #43546f;
+  --acento: var(--marino-800);
+  --acento-texto: var(--crema-100);
+  --enlace: #0f4fa8;
+  --ok: #0c5a36;
+  --ok-fondo: #d8f3e3;
+  --aviso: #6b4a00;
+  --aviso-fondo: #fff0c7;
+  --peligro: #8f1d1d;
+  --peligro-fondo: #fde0de;
+  --info: #0b3d82;
+  --info-fondo: #dcebff;
+  --foco: var(--marino-800);
+  --sombra: 0 4px 18px rgba(11, 31, 58, .12);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+h1, h2, h3, h4 { font-family: var(--fuente-titulo); line-height: 1.2; margin: 0 0 .5em; }
+h1 { font-size: 1.6rem; font-weight: 800; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0 0 1em; }
+a { color: var(--enlace); }
+[hidden] { display: none !important; }
+
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; border-radius: 4px; }
+
+.solo-lectores {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.saltar {
+  position: absolute; left: 8px; top: -60px; z-index: 100;
+  background: var(--acento); color: var(--acento-texto);
+  padding: 10px 14px; border-radius: var(--radio-sm); font-weight: 700;
+}
+.saltar:focus { top: 8px; }
+
+/* ---------- marca ---------- */
+.marca { display: inline-flex; align-items: center; gap: 10px; font-family: var(--fuente-titulo); font-weight: 800; font-size: 1.25rem; color: var(--texto); text-decoration: none; }
+.marca svg { width: 34px; height: 34px; flex: none; }
+.marca b { color: var(--acento); }
+.tema-claro .marca b { color: var(--marino-800); }
+
+/* ---------- botones (≥ 44 px de alto) ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; min-width: 48px; padding: 0 20px;
+  font: 700 1rem var(--fuente-texto);
+  border: 2px solid transparent; border-radius: var(--radio);
+  background: var(--acento); color: var(--acento-texto);
+  cursor: pointer; text-decoration: none; text-align: center;
+  transition: filter .15s, transform .05s;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn:active { transform: translateY(1px); }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; filter: none; }
+.btn-secundario { background: transparent; color: var(--texto); border-color: var(--borde); }
+.btn-secundario:hover { background: var(--superficie-2); filter: none; }
+.btn-peligro { background: var(--peligro-fondo); color: var(--peligro); border-color: var(--peligro); }
+.btn-bloque { display: flex; width: 100%; }
+.btn-chico { min-height: 44px; padding: 0 14px; font-size: .95rem; }
+.btn-enlace { background: none; border: 0; color: var(--enlace); text-decoration: underline; min-height: 44px; padding: 0 6px; font: inherit; font-weight: 700; cursor: pointer; }
+
+/* ---------- formularios ---------- */
+.campo { margin-bottom: 16px; }
+.campo label { display: block; font-weight: 700; margin-bottom: 6px; }
+.campo .ayuda { display: block; color: var(--texto-suave); font-size: .875rem; margin-top: 4px; }
+.entrada {
+  width: 100%; min-height: 48px; padding: 10px 14px;
+  font: 400 1rem var(--fuente-texto); color: var(--texto);
+  background: var(--superficie-2); border: 2px solid var(--borde); border-radius: var(--radio-sm);
+}
+.tema-claro .entrada { background: #fff; }
+.entrada::placeholder { color: var(--texto-suave); opacity: .8; }
+.entrada:focus { outline: 3px solid var(--foco); outline-offset: 1px; border-color: var(--acento); }
+.entrada[aria-invalid="true"] { border-color: var(--peligro); }
+.campo-error { color: var(--peligro); font-weight: 700; font-size: .9rem; margin-top: 6px; min-height: 0; }
+.campo-error:empty { display: none; }
+.con-boton { position: relative; }
+.con-boton .entrada { padding-right: 96px; }
+.con-boton .btn-enlace { position: absolute; right: 4px; top: 2px; }
+
+/* ---------- tarjetas y avisos ---------- */
+.tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 20px; box-shadow: var(--sombra); }
+.aviso { border-radius: var(--radio-sm); padding: 12px 14px; margin-bottom: 16px; font-weight: 600; border: 1px solid transparent; }
+.aviso::before { margin-right: 8px; font-weight: 800; }
+.aviso-error { background: var(--peligro-fondo); color: var(--peligro); border-color: var(--peligro); }
+.aviso-error::before { content: "✕"; }
+.aviso-ok { background: var(--ok-fondo); color: var(--ok); border-color: var(--ok); }
+.aviso-ok::before { content: "✓"; }
+.aviso-info { background: var(--info-fondo); color: var(--info); border-color: var(--info); }
+.aviso-info::before { content: "ℹ"; }
+
+/* ---------- estados de negocio: siempre texto + color + símbolo ---------- */
+.estado { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-weight: 700; font-size: .85rem; border: 1px solid currentColor; }
+.estado::before { font-weight: 800; }
+.estado-abierto, .estado-aprobado { color: var(--ok); background: var(--ok-fondo); }
+.estado-abierto::before, .estado-aprobado::before { content: "●"; }
+.estado-cerrado { color: var(--texto-suave); background: transparent; }
+.estado-cerrado::before { content: "○"; }
+.estado-pendiente { color: var(--aviso); background: var(--aviso-fondo); }
+.estado-pendiente::before { content: "◔"; }
+.estado-rechazado { color: var(--peligro); background: var(--peligro-fondo); }
+.estado-rechazado::before { content: "✕"; }
+
+/* ---------- pestañas ---------- */
+.pestanas { display: flex; gap: 4px; background: var(--superficie-2); padding: 4px; border-radius: var(--radio); margin-bottom: 20px; }
+.pestanas button { flex: 1; min-height: 44px; border: 0; border-radius: calc(var(--radio) - 4px); background: transparent; color: var(--texto-suave); font: 700 1rem var(--fuente-texto); cursor: pointer; }
+.pestanas button[aria-selected="true"], .pestanas button[aria-checked="true"] { background: var(--acento); color: var(--acento-texto); }
+
+/* ---------- pantalla de acceso (login / registro) ---------- */
+.acceso { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+.acceso-caja { width: 100%; max-width: 440px; }
+.acceso-caja .marca { margin-bottom: 20px; }
+.acceso-caja h1 { margin-bottom: 4px; }
+.acceso-sub { color: var(--texto-suave); margin-bottom: 20px; }
+.cargando { opacity: .7; pointer-events: none; }

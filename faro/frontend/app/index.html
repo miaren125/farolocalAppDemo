@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#091D36">
+  <meta name="color-scheme" content="dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FaroLocal">
+  <link rel="manifest" href="/app/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/app/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+  <title>FaroLocal — App del peatón</title>
+  <link rel="stylesheet" href="/shared/tema.css">
+  <link rel="stylesheet" href="/app/app.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <div class="telefono" id="telefono">
+    <div class="notch" aria-hidden="true"></div>
+    <div class="pantalla" id="pantalla">
+
+      <!-- Splash: logo sobre Marino 1,5 s -->
+      <div class="splash" id="splash"><img src="/assets/logo-farolocal.png" alt="FaroLocal" width="320" height="111"></div>
+
+      <!-- Acceso (RF01): iniciar sesión y registro, según Figma 14:34 / 27:62 -->
+      <main class="acceso" id="vista-acceso" hidden>
+        <img class="acceso-logo" src="/assets/logo-farolocal.png" alt="FaroLocal" width="320" height="111">
+        <h1 class="acceso-titulo" id="acceso-titulo">INICIAR SESIÓN</h1>
+
+        <form id="form-login" class="form-acceso" novalidate>
+          <div class="aviso aviso-info" id="aviso-sesion" role="status" hidden></div>
+          <label for="l-usuario">USUARIO</label>
+          <input class="pastilla" id="l-usuario" name="correo" type="email" autocomplete="username" inputmode="email" aria-describedby="l-usuario-error" required>
+          <div class="campo-error" id="l-usuario-error" data-error-de="correo" role="alert"></div>
+          <label for="l-pass">CONTRASEÑA</label>
+          <input class="pastilla" id="l-pass" name="password" type="password" autocomplete="current-password" aria-describedby="l-pass-error" required>
+          <div class="campo-error" id="l-pass-error" data-error-de="password" role="alert"></div>
+          <button class="btn-dorado" type="submit">INICIAR</button>
+          <p class="cambio">¿NO TIENES CUENTA?<br><button type="button" class="enlace" data-ir="registro">REGÍSTRATE</button></p>
+          <p class="cambio"><button type="button" class="enlace" data-proximamente="Recuperar la contraseña estará disponible pronto.">OLVIDÉ MI CONTRASEÑA</button> | <button type="button" class="enlace" data-proximamente="El soporte estará disponible pronto.">SOPORTE</button></p>
+        </form>
+
+        <form id="form-registro" class="form-acceso" novalidate hidden>
+          <div class="aviso aviso-error" id="registro-aviso" role="alert" hidden></div>
+          <label for="r-nombre">USUARIO</label>
+          <input class="pastilla" id="r-nombre" name="nombre" autocomplete="name" maxlength="80" aria-describedby="r-nombre-error" required>
+          <div class="campo-error" id="r-nombre-error" data-error-de="nombre" role="alert"></div>
+          <label for="r-correo">CORREO</label>
+          <input class="pastilla" id="r-correo" name="correo" type="email" autocomplete="email" inputmode="email" aria-describedby="r-correo-error" required>
+          <div class="campo-error" id="r-correo-error" data-error-de="correo" role="alert"></div>
+          <label for="r-tel">TELÉFONO</label>
+          <input class="pastilla" id="r-tel" name="telefono" type="tel" autocomplete="tel-national" inputmode="numeric" maxlength="14" aria-describedby="r-tel-error" required>
+          <div class="campo-error" id="r-tel-error" data-error-de="telefono" role="alert"></div>
+          <label for="r-pass">CONTRASEÑA</label>
+          <input class="pastilla" id="r-pass" name="password" type="password" autocomplete="new-password" aria-describedby="r-pass-error" required>
+          <div class="campo-error" id="r-pass-error" data-error-de="password" role="alert"></div>
+          <button class="btn-dorado" type="submit">REGISTRARSE</button>
+          <p class="cambio">¿YA TIENES CUENTA?<br><button type="button" class="enlace" data-ir="login">INICIA SESIÓN</button></p>
+          <p class="cambio"><button type="button" class="enlace" data-proximamente="El soporte estará disponible pronto.">SOPORTE</button></p>
+        </form>
+      </main>
+
+      <!-- App -->
+      <div id="vista-app" class="app" hidden>
+        <header class="barra-sup">
+          <img class="barra-logo" src="/assets/logo-farolocal.png" alt="FaroLocal" width="165" height="57">
+          <button class="chip-hora" id="hora-chip" type="button" aria-haspopup="dialog" aria-label="Cambiar la hora simulada">
+            <span id="hora-texto">--:--</span>
+          </button>
+          <button class="perfil-circulo" id="perfil-btn" type="button" aria-haspopup="dialog" aria-label="Perfil y sesión"></button>
+        </header>
+
+        <main id="contenido" class="cuerpo">
+          <div class="aviso aviso-info aviso-flota" id="aviso-offline" role="status" hidden>Sin conexión: se muestra el último mapa guardado. Rutas, cupones, contactos y SOS necesitan internet.</div>
+
+          <!-- Mapa compartido por Mapa, Ruta y Reportar -->
+          <section id="zona-mapa" class="zona-mapa" aria-label="Mapa de la zona piloto">
+            <div id="mapa" aria-busy="true"></div>
+            <div class="aviso aviso-error aviso-flota" id="error-mapa" role="alert" hidden></div>
+
+            <!-- tarjetas sobre el mapa (arriba) -->
+            <div class="capa-sup" id="capa-sup">
+              <div class="buscador-caja" id="buscador-caja">
+                <input class="buscador" id="buscador" type="text" role="combobox" aria-expanded="false" aria-controls="sugerencias" aria-autocomplete="list" aria-label="¿A dónde vas? Escribe un Punto Faro o una calle" placeholder="¿A DÓNDE VAS?" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go">
+                <button class="buscador-x" id="buscador-limpiar" type="button" aria-label="Quitar el destino" hidden><span data-icono="cerrar" data-tam="18"></span></button>
+                <ul class="sugerencias" id="sugerencias" role="listbox" aria-label="Sugerencias de destino" hidden></ul>
+              </div>
+              <div id="reporte-sup" class="reporte-sup" hidden>
+                <h2 class="titulo-fig titulo-mapa" id="reporte-titulo" tabindex="-1">UBICA EL NEGOCIO</h2>
+                <p class="reporte-pista" id="reporte-pista">Toca la calle donde está el negocio.</p>
+              </div>
+            </div>
+
+            <!-- tarjetas sobre el mapa (abajo) -->
+            <div class="capa-inf" id="capa-inf">
+              <!-- punto tocado en el mapa -->
+              <div class="tarjeta-mapa" id="mapa-punto" aria-live="polite" hidden></div>
+              <!-- vista previa de la ruta y navegación (Figma 54:1580 / 54:1700) -->
+              <div class="tarjeta-ruta" id="ruta-tarjeta" aria-live="polite" hidden></div>
+              <!-- RF09, paso 2: ENVIAR -->
+              <div class="reporte-envio" id="reporte-tarjeta" hidden>
+                <p class="reporte-tramo" id="reporte-tramo"></p>
+                <div class="campo-error" id="reporte-tramo-error" role="alert"></div>
+                <button class="pill-grande" id="reporte-enviar" type="button">ENVIAR</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Acceso rápido (Figma 27:112) -->
+          <section id="vista-acceso-rapido" class="vista vista-rapido" hidden>
+            <div class="rapido-cab">
+              <span class="circulo-crema" aria-hidden="true"></span>
+              <h2 id="rapido-nombre" tabindex="-1">USUARIO</h2>
+              <button class="icono-borde" id="rapido-editar" type="button" aria-label="Ver mi perfil"><span data-icono="editar"></span></button>
+            </div>
+            <h3 class="rapido-titulo">GESTIONA TU CUENTA</h3>
+            <ul class="rapido-lista">
+              <li><button type="button" data-ir-vista="contactos"><span data-icono="usuarios"></span>MIS CONTACTOS</button></li>
+              <li><button type="button" data-ir-vista="cupones"><span data-icono="premio"></span>MIS CUPONES</button></li>
+              <li><button type="button" data-ir-vista="reportar"><span data-icono="alerta"></span>REPORTAR ZONA</button></li>
+            </ul>
+          </section>
+
+          <!-- Mis cupones (Figma 27:331 / 40:941) -->
+          <section id="vista-cupones" class="vista vista-fig" hidden>
+            <h2 class="titulo-fig" tabindex="-1">MIS CUPONES</h2>
+            <div class="aviso aviso-error" id="cupones-error" role="alert" hidden></div>
+            <p class="vacio-fig" id="cupones-vacio" hidden>AÚN NO TIENES CUPONES;<br>APARECEN AL PEDIR UNA RUTA FARO</p>
+            <ul class="lista-fig" id="cupones-lista"></ul>
+          </section>
+
+          <!-- Mis contactos (Figma 27:200 / 54:1204) -->
+          <section id="vista-contactos" class="vista vista-fig" hidden>
+            <h2 class="titulo-fig" tabindex="-1">MIS CONTACTOS</h2>
+            <div class="aviso aviso-error" id="contactos-error" role="alert" hidden></div>
+            <div class="botones-fig">
+              <button class="pill-dorada" id="contacto-nuevo" type="button">AGREGAR</button>
+              <button class="pill-dorada" id="contacto-eliminar" type="button" aria-pressed="false">ELIMINAR</button>
+            </div>
+            <p class="vacio-fig vacio-fig--izq" id="contactos-vacio" hidden>AÚN NO TIENES CONTACTOS.<br>AGREGA AL MENOS UNO PARA QUE EL SOS PUEDA AVISARLES.</p>
+            <ul class="lista-fig lista-contactos" id="contactos-lista"></ul>
+          </section>
+
+          <!-- Reportar zona, paso 1 (Figma 27:351 / 40:666) -->
+          <section id="vista-reportar" class="vista vista-fig" hidden>
+            <h2 class="titulo-fig" tabindex="-1">REPORTAR ZONA</h2>
+            <form id="form-reporte" class="form-fig" novalidate>
+              <div class="aviso aviso-error" id="reporte-aviso" role="alert" hidden></div>
+              <label class="etiqueta-fig" for="reporte-ref">NEGOCIO O REFERENCIA</label>
+              <input class="pastilla pastilla--baja" id="reporte-ref" name="descripcion" maxlength="250" autocomplete="off" aria-describedby="reporte-ref-cuenta reporte-ref-error" required>
+              <div class="contador" id="reporte-ref-cuenta" aria-live="off">0 / 250</div>
+              <div class="campo-error" id="reporte-ref-error" data-error-de="descripcion" role="alert"></div>
+              <p class="pregunta-fig" id="reporte-tipo-et">¿CUÁL ES EL MOTIVO?</p>
+              <div class="chips-fig" id="reporte-chips" role="radiogroup" aria-labelledby="reporte-tipo-et"></div>
+              <input type="hidden" name="tipo" id="reporte-tipo">
+              <div class="campo-error" id="reporte-tipo-error" data-error-de="tipo" role="alert"></div>
+              <button class="btn-dorado" type="submit">SIGUIENTE</button>
+              <button class="enlace enlace--centro" id="reportes-abrir" type="button">VER MIS REPORTES</button>
+            </form>
+          </section>
+        </main>
+
+        <!-- Barra inferior: Inicio · SOS (mantener 2 s) · Acceso rápido -->
+        <nav class="nav" aria-label="Secciones">
+          <button type="button" class="nav-b" data-vista="mapa" aria-current="page"><span class="nav-i" data-icono="casa"></span><span class="nav-t">INICIO</span></button>
+          <div class="sos">
+            <button id="sos-boton" class="sos-boton" type="button" aria-describedby="sos-ayuda" aria-label="SOS. Mantén presionado 2 segundos para activar la alerta">
+              <svg class="sos-anillo" viewBox="0 0 88 88" aria-hidden="true"><circle class="sos-anillo__pista" cx="44" cy="44" r="41"/><circle class="sos-anillo__avance" cx="44" cy="44" r="41"/></svg>
+              <span class="sos-icono-b" data-icono="alerta"></span>
+            </button>
+            <span class="sos-texto-b" aria-hidden="true">SOS</span>
+            <span id="sos-ayuda" class="solo-lectores">Mantén 2 segundos</span>
+          </div>
+          <button type="button" class="nav-b" data-vista="acceso" aria-current="false"><span class="nav-i" data-icono="cuadricula"></span><span class="nav-t">ACCESO<br>RÁPIDO</span></button>
+        </nav>
+      </div>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <div id="velo" class="velo" hidden></div>
+
+      <!-- Hojas inferiores (bottom sheets). Se abren dentro del marco del teléfono -->
+      <dialog id="dlg-ficha" class="hoja" aria-labelledby="ficha-titulo"><div class="hoja-asa" aria-hidden="true"></div><div id="ficha-cuerpo"></div></dialog>
+
+      <dialog id="dlg-cupon" class="hoja" aria-labelledby="cupon-titulo"><div class="hoja-asa" aria-hidden="true"></div><div id="cupon-cuerpo"></div></dialog>
+
+      <dialog id="dlg-hora" class="hoja" aria-labelledby="hora-titulo">
+        <div class="hoja-asa" aria-hidden="true"></div>
+        <h2 id="hora-titulo">Hora simulada</h2>
+        <p class="suave">Para la demostración: el mapa, los Faros abiertos y las rutas se calculan con esta hora.</p>
+        <div class="campo">
+          <label for="hora">Hora</label>
+          <input class="entrada entrada-hora" id="hora" type="time" step="60">
+        </div>
+        <div class="acciones fila-2">
+          <button class="btn btn-secundario" id="hora-ahora" type="button">Hora actual</button>
+          <button class="btn" id="hora-listo" type="button">Listo</button>
+        </div>
+      </dialog>
+
+      <dialog id="dlg-perfil" class="hoja" aria-labelledby="perfil-titulo">
+        <div class="hoja-asa" aria-hidden="true"></div>
+        <div class="perfil-cab">
+          <span class="avatar avatar-grande" id="perfil-avatar" aria-hidden="true">?</span>
+          <div><h2 id="perfil-titulo">Tu perfil</h2><p class="suave" id="perfil-correo"></p></div>
+        </div>
+        <h3>Bandeja de alertas SOS</h3>
+        <p class="suave">Historial de tus alertas. Los avisos son simulados.</p>
+        <div class="aviso aviso-error" id="alertas-error" role="alert" hidden></div>
+        <ul class="lista" id="alertas-lista"></ul>
+        <div class="acciones">
+          <button class="btn btn-secundario" id="perfil-cerrar-hoja" type="button">Volver</button>
+          <button class="btn btn-bloque btn-salir" id="salir" type="button">Cerrar sesión</button>
+        </div>
+      </dialog>
+
+      <dialog id="dlg-reportes" class="hoja" aria-labelledby="reportes-titulo">
+        <div class="hoja-asa" aria-hidden="true"></div>
+        <h2 id="reportes-titulo">Mis reportes</h2>
+        <div class="aviso aviso-error" id="reportes-error" role="alert" hidden></div>
+        <ul class="lista" id="reportes-lista"></ul>
+        <button class="btn btn-secundario btn-bloque" id="reportes-cerrar" type="button">Cerrar</button>
+      </dialog>
+
+      <dialog id="dlg-contacto" class="hoja" aria-labelledby="contacto-titulo">
+        <div class="hoja-asa" aria-hidden="true"></div>
+        <h2 id="contacto-titulo">Nuevo contacto</h2>
+        <form id="form-contacto" novalidate>
+          <div class="aviso aviso-error" id="contacto-aviso" role="alert" hidden></div>
+          <div class="campo">
+            <label for="c-nombre">Nombre</label>
+            <input class="entrada" id="c-nombre" name="nombre" autocomplete="off" maxlength="60" aria-describedby="c-nombre-error" required>
+            <div class="campo-error" id="c-nombre-error" data-error-de="nombre" role="alert"></div>
+          </div>
+          <div class="campo">
+            <label for="c-celular">Celular</label>
+            <input class="entrada" id="c-celular" name="celular" type="tel" inputmode="numeric" autocomplete="off" maxlength="14" aria-describedby="c-celular-ayuda c-celular-error" required>
+            <span class="ayuda" id="c-celular-ayuda">10 dígitos.</span>
+            <div class="campo-error" id="c-celular-error" data-error-de="celular" role="alert"></div>
+          </div>
+          <div class="acciones fila-2">
+            <button class="btn btn-secundario" type="button" id="contacto-cancelar">Cancelar</button>
+            <button class="btn" type="submit">Guardar</button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog id="dlg-confirmar" class="hoja" aria-labelledby="confirmar-titulo">
+        <div class="hoja-asa" aria-hidden="true"></div>
+        <h2 id="confirmar-titulo"></h2>
+        <p id="confirmar-texto"></p>
+        <div class="acciones fila-2">
+          <button class="btn btn-secundario" id="confirmar-no" type="button">Cancelar</button>
+          <button class="btn btn-aviso" id="confirmar-ok" type="button"></button>
+        </div>
+      </dialog>
+
+      <!-- Aviso de error centrado (Figma 27:31) -->
+      <dialog id="dlg-error" class="modal-centro" aria-labelledby="error-titulo">
+        <button class="modal-x" id="error-cerrar" type="button" aria-label="Cerrar aviso"><span data-icono="cerrar"></span></button>
+        <h2 id="error-titulo">DATOS INVÁLIDOS</h2>
+        <p class="modal-texto" id="error-texto">USUARIO O CONTRASEÑA INCORRECTOS</p>
+        <p class="modal-pie" id="error-pie">FAVOR DE VERIFICAR LOS DATOS</p>
+      </dialog>
+
+      <!-- SOS: pantalla completa dentro del marco; no se cierra tocando fuera ni con Esc -->
+      <dialog id="dlg-sos" class="modal-centro modal-sos" data-bloquea="si" data-fase="cuenta" aria-labelledby="sos-titulo">
+        <button class="modal-x" id="sos-x" type="button" aria-label="Cerrar aviso" hidden><span data-icono="cerrar"></span></button>
+        <h2 id="sos-titulo">ENVIANDO ALERTA</h2>
+        <div id="sos-cuenta" class="sos-panel">
+          <div class="sos-reloj" id="sos-progreso" role="timer" aria-label="Segundos restantes para enviar el aviso"><span id="sos-numero">10</span></div>
+          <p class="modal-texto" id="sos-para"></p>
+          <button class="pill-grande" id="sos-cancelar" type="button">Cancelar, fue falsa alarma</button>
+          <span class="solo-lectores" id="sos-anuncio" aria-live="assertive"></span>
+        </div>
+        <div id="sos-enviado" class="sos-panel" hidden>
+          <p class="modal-texto" id="sos-enviado-texto"></p>
+          <ul class="sos-nombres" id="sos-enviados"></ul>
+          <a class="pill-grande" id="sos-911" href="tel:911">LLAMAR 911</a>
+          <button class="pill-grande" id="sos-cerrar-enviado" type="button">CANCELAR</button>
+        </div>
+        <div id="sos-cancelado" class="sos-panel" hidden>
+          <p class="modal-texto" id="sos-cancelado-texto"></p>
+          <button class="pill-grande" id="sos-cerrar-cancelado" type="button">VOLVER</button>
+        </div>
+        <div id="sos-error" class="sos-panel" hidden>
+          <p class="modal-texto" id="sos-error-texto" role="alert"></p>
+          <a class="pill-grande" href="tel:911">LLAMAR 911</a>
+          <button class="pill-grande" id="sos-reintentar" type="button">REINTENTAR</button>
+          <button class="pill-grande pill-grande--borde" id="sos-cerrar-error" type="button">CERRAR</button>
+        </div>
+      </dialog>
+    </div>
+  </div>
+
+  <script src="/shared/api.js"></script>
+  <script src="/shared/mapa.js"></script>
+  <script src="/shared/auth.js"></script>
+  <script src="/vendor/qrcode.js"></script>
+  <script src="/app/nucleo.js"></script>
+  <script src="/app/acceso.js"></script>
+  <script src="/app/ficha.js"></script>
+  <script src="/app/ruta.js"></script>
+  <script src="/app/cupones.js"></script>
+  <script src="/app/contactos.js"></script>
+  <script src="/app/reportes.js"></script>
+  <script src="/app/sos.js"></script>
+  <script src="/app/app.js"></script>
+  <script src="/app/pwa.js"></script>
+</body>
+</html>

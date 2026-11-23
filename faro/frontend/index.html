@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1f3a">
+  <title>FaroLocal</title>
+  <link rel="stylesheet" href="/shared/tema.css">
+  <style>
+    .selector { display: grid; gap: 16px; margin-top: 8px; }
+    .opcion { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--texto);
+      background: var(--superficie); border: 2px solid var(--borde); border-radius: var(--radio); padding: 18px 20px; min-height: 88px; }
+    .opcion:hover, .opcion:focus-visible { border-color: var(--acento); }
+    .opcion strong { font: 800 1.15rem var(--fuente-titulo); }
+    .opcion span { color: var(--texto-suave); }
+  </style>
+</head>
+<body>
+  <main class="acceso" id="contenido">
+    <div class="acceso-caja">
+      <a class="marca" href="/" aria-label="FaroLocal">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#f5b83d"/><path d="M18 40 L21 19 L27 19 L30 40 Z" fill="#07152b"/><rect x="19" y="12" width="10" height="7" rx="1.5" fill="#07152b"/><path d="M20 12 L24 7 L28 12 Z" fill="#07152b"/></svg>
+        <span>Faro<b>Local</b></span>
+      </a>
+      <div class="aviso aviso-info" id="aviso" role="status" hidden></div>
+      <h1>¿Cómo quieres entrar?</h1>
+      <p class="acceso-sub" id="estado">Comprobando tu sesión…</p>
+      <nav class="selector" aria-label="Elige tu acceso" id="opciones" hidden>
+        <a class="opcion" href="/app/"><strong>Soy peatón</strong><span>Rutas con buena luz y Puntos Faro abiertos.</span></a>
+        <a class="opcion" href="/portal/"><strong>Soy comercio o administración</strong><span>Registra tu negocio, cupones y validaciones.</span></a>
+      </nav>
+    </div>
+  </main>
+
+  <script src="/shared/api.js"></script>
+  <script src="/index.js"></script>
+</body>
+</html>
