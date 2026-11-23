@@ -5,7 +5,14 @@
 
   function mostrarAcceso() {
     $("vista-app").hidden = true;
-    App.montarAcceso((u) => (u.rol === "peaton" ? iniciar(u) : Faro.irSegunRol(u)));
+    App.montarAcceso((u) => (u.rol === "peaton" ? iniciar(u) : rechazarNoPeaton()));
+  }
+
+  // Esta versión es solo para peatones: una cuenta de otro tipo no entra (y no se redirige a ningún portal).
+  function rechazarNoPeaton() {
+    Faro.cerrarSesion();
+    Faro.guardarAviso("Esta app es solo para peatones. Entra con una cuenta de peatón.");
+    location.replace("/app/");
   }
 
   function horaActual() {
@@ -88,8 +95,8 @@
   (async function () {
     App.pintarIconos();
     // splash: el logo se queda 1,5 s mientras se revisa si ya hay sesión
-    const [, u] = await Promise.all([new Promise((r) => setTimeout(r, 1500)), Faro.exigirRol(["peaton"])]);
-    if (u === undefined) return;          // redirigido a otra sección
+    const [, u] = await Promise.all([new Promise((r) => setTimeout(r, 1500)), Faro.sesionActual()]);
+    if (u && u.rol !== "peaton") return rechazarNoPeaton();
     $("splash").hidden = true;
     if (u === null) return mostrarAcceso();
     iniciar(u);

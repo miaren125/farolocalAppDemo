@@ -377,10 +377,42 @@ class TestReenvioDeRechazados(Base):
 
 class TestFrontendEstatico(Base):
     def test_secciones_con_y_sin_diagonal(self):
+        os.environ["FARO_PORTAL"] = "1"
+        self.addCleanup(os.environ.pop, "FARO_PORTAL", None)
         for ruta in ("/", "/app", "/app/", "/portal", "/portal/", "/portal/comercio", "/portal/admin"):
             r = self.c.get(ruta)
             self.assertEqual(r.status_code, 200, ruta)
             self.assertIn("text/html", r.content_type, ruta)
+            r.close()
+
+    def test_portal_apagado_por_defecto(self):
+        os.environ.pop("FARO_PORTAL", None)
+        r = self.c.get("/")
+        self.assertEqual(r.status_code, 302)
+        self.assertTrue(r.headers["Location"].endswith("/app/"))
+        for ruta in ("/portal", "/portal/", "/portal/admin/", "/portal/comercio/", "/portal/portal.css", "/portal/portal.js"):
+            r = self.c.get(ruta)
+            self.assertEqual(r.status_code, 404, ruta)
+            self.assertIn("no está disponible en esta versión", r.get_data(as_text=True), ruta)
+            r.close()
+        for ruta in ("/app/", "/app/sw.js", "/shared/api.js"):
+            r = self.c.get(ruta)
+            self.assertEqual(r.status_code, 200, ruta)
+            r.close()
+
+    def test_portal_apagado_no_toca_la_api(self):
+        os.environ.pop("FARO_PORTAL", None)
+        self.admin()
+        self.comercio()
+        r = self.c.get("/api/admin/negocios", headers=self.admin())
+        self.assertEqual(r.status_code, 200)
+
+    def test_portal_encendido(self):
+        os.environ["FARO_PORTAL"] = "1"
+        self.addCleanup(os.environ.pop, "FARO_PORTAL", None)
+        for ruta in ("/", "/portal/"):
+            r = self.c.get(ruta)
+            self.assertEqual(r.status_code, 200, ruta)
             r.close()
 
     def test_recursos_compartidos_y_404(self):

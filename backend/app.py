@@ -7,7 +7,7 @@ from datetime import date, datetime, timedelta, timezone
 from functools import wraps
 
 import jwt
-from flask import Flask, g, jsonify, request, send_from_directory
+from flask import Flask, Response, g, jsonify, redirect, request, send_from_directory
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import db
@@ -851,8 +851,16 @@ def admin_rechazar_reporte(rid):
 
 
 # ---------------------------------------------------------------- frontend estático
+def portal_activo():
+    """Interruptor FARO_PORTAL: "1" activa el portal web (comercio y administración). Por defecto apagado.
+    Solo afecta a las páginas /portal/...; los endpoints /api/... siempre funcionan."""
+    return os.environ.get("FARO_PORTAL", "0").strip() == "1"
+
+
 @app.get("/")
 def raiz():
+    if not portal_activo():
+        return redirect("/app/")
     return send_from_directory(FRONT, "index.html")
 
 
@@ -860,6 +868,8 @@ def raiz():
 def estatico(ruta):
     if ruta.startswith("api/"):
         return err("Recurso no encontrado.", 404)
+    if (ruta == "portal" or ruta.startswith("portal/")) and not portal_activo():
+        return Response("Esta sección no está disponible en esta versión", 404, mimetype="text/plain; charset=utf-8")
     ruta_abs = os.path.join(FRONT, ruta)
     if os.path.isdir(ruta_abs):
         ruta = ruta.rstrip("/") + "/index.html"  # "/" fijo: en Windows os.path.join usa "\" y send_from_directory lo rechaza

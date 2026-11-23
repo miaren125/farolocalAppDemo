@@ -3,7 +3,7 @@
    · /api/zona (mapa, dato público): red primero; sin conexión sirve el último mapa guardado (marcado con X-Desde-Cache).
    · Resto de /api (contactos, SOS, rutas, cupones…): NUNCA se guarda en caché (datos personales); sin conexión fallan con mensaje.
    Para publicar cambios de archivos del cascarón, sube VERSION. */
-const VERSION = "faro-app-v4";
+const VERSION = "faro-app-v5";
 const CASCARON = [
   "/app/", "/app/app.css", "/app/app.js", "/app/nucleo.js", "/app/acceso.js", "/app/ficha.js", "/app/ruta.js", "/app/cupones.js",
   "/app/contactos.js", "/app/reportes.js", "/app/sos.js", "/app/pwa.js", "/app/manifest.webmanifest",
@@ -53,6 +53,7 @@ self.addEventListener("fetch", (e) => {
     })());
     return;
   }
+  if (url.pathname.startsWith("/portal")) return;         // el portal nunca se guarda en caché
   if (url.pathname.startsWith("/api/")) return;           // nada de datos personales en caché
 
   e.respondWith((async () => {
